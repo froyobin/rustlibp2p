@@ -1,0 +1,14 @@
+[package]
+name = "hello_world"
+version = "0.1.0"
+authors = ["bin yu <froyo.bin@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libp2p= "0.12.0"
+futures="0.1.28"
+env_logger="0.6.2"
+tokio = "0.1.22"
+tokio-stdin-stdout="0.1.5"

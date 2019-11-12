@@ -69,13 +69,13 @@ fn main() {
     let transport = libp2p::build_development_transport(local_key);
 
     // Create a Floodsub topic
-    let floodsub_topic = libp2p::floodsub::TopicBuilder::new("chat").build();
+    let floodsub_topic = libp2p::floodsub::TopicBuilder::new("BroadcastTss").build();
     // We create a custom network behaviour that combines floodsub and mDNS.
     // In the future, we want to improve libp2p to make this easier to do.
     #[derive(NetworkBehaviour)]
     struct MyBehaviour<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> {
         floodsub: libp2p::floodsub::Floodsub<TSubstream>,
-        mdns: libp2p::mdns::Mdns<TSubstream>, 
+        mdns: libp2p::mdns::Mdns<TSubstream>,
     }
 
     impl<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite>
@@ -124,11 +124,13 @@ fn main() {
         };
 
         behaviour.floodsub.subscribe(floodsub_topic.clone());
+        behaviour.floodsub.subscribe(floodsub_topic.clone());
+
         libp2p::Swarm::new(transport, behaviour, local_peer_id)
     };
 
     // Reach out to another node if specified
-    if let Some(to_dial) = std::env::args().nth(1) {
+    if let Some(to_dial) = std::env::args().nth(2) {
         let dialing = to_dial.clone();
         match to_dial.parse() {
             Ok(to_dial) => match libp2p::Swarm::dial_addr(&mut swarm, to_dial) {
@@ -144,7 +146,12 @@ fn main() {
     let mut framed_stdin = FramedRead::new(stdin, LinesCodec::new());
 
     // Listen on all interfaces and whatever port the OS assigns
-    libp2p::Swarm::listen_on(&mut swarm, "/ip4/0.0.0.0/tcp/0".parse().unwrap()).unwrap();
+    // libp2p::Swarm::listen_on(&mut swarm, "/ip4/192.168.1.246/tcp/5433".parse().unwrap()).unwrap();
+    libp2p::Swarm::listen_on(
+        &mut swarm,
+        std::env::args().nth(1).unwrap().parse().unwrap(),
+    )
+    .unwrap();
 
     // Kick it off
     let mut listening = false;
@@ -165,7 +172,6 @@ fn main() {
                 Async::Ready(None) | Async::NotReady => {
                     if !listening {
                         if let Some(a) = Swarm::listeners(&swarm).next() {
-                            println!("Listening on {:?}", a);
                             listening = true;
                         }
                     }
@@ -176,4 +182,5 @@ fn main() {
 
         Ok(Async::NotReady)
     }));
+    println!("reaach ere");
 }

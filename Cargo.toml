@@ -1,5 +1,5 @@
 [package]
-name = "hello_world"
+name = "thorlibp2p"
 version = "0.1.0"
 authors = ["bin yu <froyo.bin@gmail.com>"]
 edition = "2018"

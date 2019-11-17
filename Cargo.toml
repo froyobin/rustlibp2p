@@ -12,3 +12,8 @@ futures="0.1.28"
 env_logger="0.6.2"
 tokio = "0.1.22"
 tokio-stdin-stdout="0.1.5"
+tokio-io = "0.1.12"
+futures-timer = "0.4.0"
+futures03 = { package = "futures-preview", version = "0.3.0-alpha.19", features = ["compat"] }
+hex="0.4.0"
+log="0.4.8"
